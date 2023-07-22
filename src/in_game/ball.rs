@@ -3,6 +3,8 @@ use bevy_rapier2d::prelude::*;
 
 use crate::config;
 
+use super::tracer::Tracer;
+
 pub(crate) fn spawn(
     commands: &mut Commands,
     meshes: &mut ResMut<Assets<Mesh>>,
@@ -32,5 +34,6 @@ pub(crate) fn spawn(
             angvel: 50.,
         })
         .insert(Friction::coefficient(0.))
-        .insert(ColliderMassProperties::Density(100.));
+        .insert(ColliderMassProperties::Density(100.))
+        .insert(Tracer::new(Vec2::new(100., 100.)));
 }

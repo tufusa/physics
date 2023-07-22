@@ -1,4 +1,5 @@
 use bevy::{prelude::*, window::*};
+use bevy_prototype_lyon::prelude::*;
 
 use crate::config;
 
@@ -21,7 +22,8 @@ impl Plugin for super::Base {
                     ..Default::default()
                 })
                 .add_before::<bevy::asset::AssetPlugin, _>(EmbeddedAssetPlugin),
-        );
+        )
+        .add_plugin(ShapePlugin);
     }
 
     #[cfg(target_family = "wasm")]
@@ -35,6 +37,7 @@ impl Plugin for super::Base {
                 ..Default::default()
             }),
             ..Default::default()
-        }));
+        }))
+        .add_plugin(ShapePlugin);
     }
 }

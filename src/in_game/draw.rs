@@ -1,5 +1,5 @@
 use bevy::{prelude::*, window::PrimaryWindow};
-use bevy_prototype_lyon::prelude::*;
+use bevy_prototype_lyon::{prelude::*, shapes::RoundedPolygon};
 use bevy_rapier2d::prelude::*;
 
 #[derive(Component)]
@@ -43,7 +43,8 @@ pub(crate) fn draw(
 ) {
     if !mouse_input.pressed(MouseButton::Left)
         || mouse_input.just_pressed(MouseButton::Left)
-        || mouse_input.just_released(MouseButton::Left) 
+        || mouse_input.just_released(MouseButton::Left)
+        || draw_pointer_query.is_empty()
     {
         return;
     }
@@ -74,7 +75,7 @@ pub(crate) fn draw(
                     path,
                     ..Default::default()
                 },
-                Stroke::new(Color::WHITE, 5.),
+                Stroke::new(Color::WHITE, 10.),
                 Fill::color(Color::NONE),
             ));
         });
@@ -92,6 +93,9 @@ pub(crate) fn finish_draw(
     }
 
     let (draw_pointer_entity, draw_pointer) = draw_pointer_query.single();
+    let mut draw_pointer_commands = commands.entity(draw_pointer_entity);
+    draw_pointer_commands.remove::<DrawPointer>();
+
     let points = &draw_pointer.points;
     if points.len() < 2 {
         return;
@@ -102,16 +106,16 @@ pub(crate) fn finish_draw(
             (
                 Vec2::ZERO,
                 0.,
-                Collider::capsule(points[point_i], points[point_i + 1], 2.5),
+                Collider::capsule(points[point_i], points[point_i + 1], 5.),
             )
         })
         .collect();
 
-    commands
-        .entity(draw_pointer_entity)
-        .remove::<DrawPointer>()
+    draw_pointer_commands
         .insert(RigidBody::Dynamic)
-        .insert(Collider::compound(colliders));
+        .insert(Collider::compound(colliders))
+        .insert(GravityScale(1.))
+        .insert(ColliderMassProperties::Density(10.));
 }
 
 fn cursor_position(

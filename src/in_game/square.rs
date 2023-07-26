@@ -22,11 +22,11 @@ pub(crate) fn spawn(
             config::Square::SIDE / 2.,
             config::Square::SIDE / 2.,
         ))
-        .insert(Restitution::coefficient(0.95)) // 反発係数
+        // .insert(Restitution::coefficient(0.95)) // 反発係数
         .insert(TransformBundle::from(Transform::from_translation(
             translation,
         )))
-        .insert(GravityScale(1.))
-        .insert(Friction::coefficient(0.01))
+        // .insert(GravityScale(1.))
+        // .insert(Friction::coefficient(0.01))
         .insert(ColliderMassProperties::Density(1.));
 }
